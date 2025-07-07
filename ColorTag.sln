@@ -5,8 +5,6 @@ VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorTag", "ColorTag\ColorTag.csproj", "{D5D11788-A12B-43A8-AE55-41A9E894024B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorTag9", "ColorTag9\ColorTag9.csproj", "{482255B1-36E3-4FBD-B474-C2889F1905FF}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{D5D11788-A12B-43A8-AE55-41A9E894024B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5D11788-A12B-43A8-AE55-41A9E894024B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5D11788-A12B-43A8-AE55-41A9E894024B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{482255B1-36E3-4FBD-B474-C2889F1905FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{482255B1-36E3-4FBD-B474-C2889F1905FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{482255B1-36E3-4FBD-B474-C2889F1905FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{482255B1-36E3-4FBD-B474-C2889F1905FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

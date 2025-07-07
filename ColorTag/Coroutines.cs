@@ -1,34 +1,27 @@
-﻿namespace ColorTag
+﻿using LabApi.Features.Wrappers;
+using MEC;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace ColorTag
 {
-    using System.Collections.Generic;
-
-    using Exiled.API.Features;
-
-    using MEC;
-
-    using static ColorTag.Data;
-
-    public class Coroutines
+    internal static class Coroutines
     {
-        public IEnumerator<float> ChangeColor(Player player)
+        internal static IEnumerator<float> ChangeColor(Player player, IEnumerable<string> colors)
         {
             int currentIndex = 0;
 
-            while (player.IsConnected)
+            while (player.IsOnline)
             {
-                yield return Timing.WaitForSeconds(Plugin.plugin.Config.Interval);
+                yield return Timing.WaitForSeconds(Plugin.config.Interval);
 
-                if (!Extensions.TryGetValue(player.UserId, out PlayerInfo info))
-                    break;
-
-                if (currentIndex >= info.Colors.Count)
-                {
+                if (currentIndex >= colors.Count())
                     currentIndex = 0;
-                }
 
-                player.RankColor = info.Colors[currentIndex];
+                player.GroupColor = colors.ElementAt(currentIndex);
                 currentIndex++;
             }
+
             yield break;
         }
     }

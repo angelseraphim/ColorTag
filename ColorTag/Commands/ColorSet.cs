@@ -1,33 +1,28 @@
-﻿namespace ColorTag.Commands
+﻿using CommandSystem;
+using LabApi.Features.Permissions;
+using LabApi.Features.Wrappers;
+using RemoteAdmin;
+using System;
+using System.Collections.Generic;
+using static ColorTag.Data;
+
+namespace ColorTag.Commands
 {
-    using System;
-    using System.Collections.Generic;
-
-    using CommandSystem;
-
-    using Exiled.API.Features;
-    using Exiled.Permissions.Extensions;
-
-    using static ColorTag.Data;
-
-    public class ColorSet : ICommand
+    internal class ColorSet : ICommand
     {
         public string Command { get; } = "set";
         public string[] Aliases { get; } = { };
         public string Description { get; } = "Set colors";
-        public bool SanitizeResponse => false;
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            Player player = Player.Get(sender);
+            Player player = sender is PlayerCommandSender playerCommandSender
+                                ? Player.Get(playerCommandSender)
+                                : Server.Host;
 
-            string Text = string.Empty;
-
-            List<string> colors = new List<string>();
-
-            if (!player.CheckPermission(Plugin.plugin.Config.ColorRequirePermission))
+            if (!player.HasPermissions(Plugin.config.ColorRequirePermission))
             {
-                response = Plugin.plugin.Translation.DontHavePermissions.Replace("%permission%", Plugin.plugin.Config.ColorRequirePermission);
+                response = Plugin.config.Translation.DontHavePermissions.Replace("%permission%", Plugin.config.ColorRequirePermission);
                 return false;
             }
 
@@ -37,44 +32,48 @@
                 return false;
             }
 
-            int count = arguments.Count;
-            if (Plugin.plugin.Config.GroupColorLimit.TryGetValue(player.GroupName, out int limit))
+            if (!Plugin.config.GroupColorLimit.TryGetValue(player.UserGroup.Name, out int limit))
+                limit = Plugin.config.DefaultColorLimit;
+
+            if (arguments.Count > limit)
             {
-                if (count > limit)
-                {
-                    response = Plugin.plugin.Translation.ColorLimit.Replace("%limit%", limit.ToString());
-                    return false;
-                }
-            }
-            else if (count > Plugin.plugin.Config.DefaultColorLimit)
-            {
-                response = Plugin.plugin.Translation.ColorLimit.Replace("%limit%", Plugin.plugin.Config.DefaultColorLimit.ToString());
+                response = Plugin.config.Translation.ColorLimit.Replace("%limit%", limit.ToString());
                 return false;
             }
 
+            List<string> colors = new List<string>();
+
             foreach (string arg in arguments)
             {
-                if (!Plugin.plugin.AvailableColors.ContainsKey(arg))
+                if (string.IsNullOrEmpty(arg))
                 {
-                    response = Plugin.plugin.Translation.InvalidColor.Replace("%arg%", arg).Replace("%colors%", Plugin.plugin.ShowColors());
+                    response = "Один из переданных цветов пустой или некорректный.";
                     return false;
                 }
+
+                if (!Plugin.AvailableColors.ContainsKey(arg))
+                {
+                    response = Plugin.config.Translation.InvalidColor.Replace("%arg%", arg).Replace("%colors%", Plugin.ShowColors());
+                    return false;
+                }
+
                 colors.Add(arg);
             }
 
+            string text = string.Empty;
+
             foreach (var s in colors)
-            {
-                Text += $"{s} ";
-            }
+                text += $"{s} ";
+
             if (!Extensions.TryGetValue(player.UserId, out PlayerInfo info))
-            {
                 Extensions.InsertPlayerAsync(player, colors);
-                response = Plugin.plugin.Translation.SuccessfullForNextRound.Replace("%current%", Text);
-                return true;
-            }
+
             info.Colors = colors;
+
             Extensions.PlayerInfoCollection.Update(info);
-            response = Plugin.plugin.Translation.Successfull.Replace("%current%", Text);
+            Plugin.GiveCoroutine(player);
+
+            response = Plugin.config.Translation.Successfull.Replace("%current%", text);
             return true;
         }
     }

@@ -1,27 +1,27 @@
-﻿namespace ColorTag.Commands
+﻿using CommandSystem;
+using LabApi.Features.Permissions;
+using LabApi.Features.Wrappers;
+using RemoteAdmin;
+using System;
+using static ColorTag.Data;
+
+namespace ColorTag.Commands
 {
-    using System;
-
-    using CommandSystem;
-
-    using Exiled.API.Features;
-    using Exiled.Permissions.Extensions;
-
-    using static ColorTag.Data;
-
-    public class ColorDelete : ICommand
+    internal class ColorDelete : ICommand
     {
         public string Command { get; } = "delete";
         public string[] Aliases { get; } = { "del" };
         public string Description { get; } = "Delete player data";
-        public bool SanitizeResponse => false;
+
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            Player player = Player.Get(sender);
+            Player player = sender is PlayerCommandSender playerCommandSender
+                ? Player.Get(playerCommandSender)
+                : Server.Host;
 
-            if (!player.CheckPermission(Plugin.plugin.Config.AdminRequirePermission))
+            if (!player.HasPermissions(Plugin.config.AdminRequirePermission))
             {
-                response = Plugin.plugin.Translation.DontHavePermissions.Replace("%permission%", Plugin.plugin.Config.AdminRequirePermission);
+                response = Plugin.config.Translation.DontHavePermissions.Replace("%permission%", Plugin.config.AdminRequirePermission);
                 return false;
             }
 
@@ -34,22 +34,26 @@
             switch (arguments.At(0))
             {
                 case "all":
-                    if (!player.CheckPermission(Plugin.plugin.Config.DropDataRequirePermission))
+                    if (!player.HasPermissions(Plugin.config.DropDataRequirePermission))
                     {
-                        response = Plugin.plugin.Translation.DontHavePermissions.Replace("%permission%", Plugin.plugin.Config.DropDataRequirePermission);
+                        response = Plugin.config.Translation.DontHavePermissions.Replace("%permission%", Plugin.config.DropDataRequirePermission);
                         return false;
                     }
+
                     Extensions.DeleteAll();
-                    response = Plugin.plugin.Translation.KillDataBase;
+
+                    response = Plugin.config.Translation.KillDataBase;
                     return true;
                 default:
                     if (!Extensions.TryGetValue(arguments.At(0), out PlayerInfo info))
                     {
-                        response = Plugin.plugin.Translation.OtherNotFound;
+                        response = Plugin.config.Translation.OtherNotFound;
                         return false;
                     }
+
                     Extensions.DeletePlayer(arguments.At(0));
-                    response = Plugin.plugin.Translation.SuccessfullDeleted.Replace("%userid%", arguments.At(0));
+
+                    response = Plugin.config.Translation.SuccessfullDeleted.Replace("%userid%", arguments.At(0));
                     return true;
             }
         }
