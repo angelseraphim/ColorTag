@@ -23,7 +23,7 @@ namespace ColorTag.Commands
 
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            response = "Usage: colortag (set/add/remove/check/delete) (colors)";
+            response = "Usage: colortag (set/add/remove/check/delete)";
             return false;
         }
     }

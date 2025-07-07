@@ -22,7 +22,8 @@ namespace ColorTag.Commands
 
             if (!player.HasPermissions(Plugin.config.ColorRequirePermission))
             {
-                response = Plugin.config.Translation.DontHavePermissions.Replace("%permission%", Plugin.config.ColorRequirePermission);
+                response = Plugin.config.Translation.DontHavePermissions
+                    .Replace("%permission%", Plugin.config.ColorRequirePermission);
                 return false;
             }
 
@@ -37,7 +38,8 @@ namespace ColorTag.Commands
 
             if (arguments.Count > limit)
             {
-                response = Plugin.config.Translation.ColorLimit.Replace("%limit%", limit.ToString());
+                response = Plugin.config.Translation.ColorLimit
+                    .Replace("%limit%", limit.ToString());
                 return false;
             }
 
@@ -53,7 +55,9 @@ namespace ColorTag.Commands
 
                 if (!Plugin.AvailableColors.ContainsKey(arg))
                 {
-                    response = Plugin.config.Translation.InvalidColor.Replace("%arg%", arg).Replace("%colors%", Plugin.ShowColors());
+                    response = Plugin.config.Translation.InvalidColor
+                        .Replace("%arg%", arg)
+                        .Replace("%colors%", Plugin.ShowColors());
                     return false;
                 }
 
@@ -73,7 +77,8 @@ namespace ColorTag.Commands
             Extensions.PlayerInfoCollection.Update(info);
             Plugin.GiveCoroutine(player);
 
-            response = Plugin.config.Translation.Successfull.Replace("%current%", text);
+            response = Plugin.config.Translation.Successfull
+                .Replace("%current%", text);
             return true;
         }
     }

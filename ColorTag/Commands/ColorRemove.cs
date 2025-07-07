@@ -19,7 +19,7 @@ namespace ColorTag.Commands
                 ? Player.Get(playerCommandSender)
                 : Server.Host;
 
-            if (!Extensions.TryGetValue(player.UserId, out PlayerInfo inforemove))
+            if (!Extensions.TryGetValue(player.UserId, out PlayerInfo info))
             {
                 response = Plugin.config.Translation.NotFoundInDataBase;
                 return false;
@@ -28,13 +28,15 @@ namespace ColorTag.Commands
             string text = string.Empty;
 
             List<string> colors = new List<string>();
-            List<string> alreadyUsedColorsinforemove = inforemove.Colors;
+            List<string> alreadyUsedColorsinforemove = info.Colors;
 
             foreach (string arg in arguments)
             {
                 if (!Plugin.AvailableColors.ContainsKey(arg))
                 {
-                    response = Plugin.config.Translation.InvalidColor.Replace("%arg%", arg).Replace("%colors%", Plugin.ShowColors());
+                    response = Plugin.config.Translation.InvalidColor
+                        .Replace("%arg%", arg)
+                        .Replace("%colors%", Plugin.ShowColors());
                     return false;
                 }
 
@@ -47,12 +49,13 @@ namespace ColorTag.Commands
             foreach (var s in alreadyUsedColorsinforemove)
                 text += $"{s} ";
 
-            inforemove.Colors = alreadyUsedColorsinforemove;
+            info.Colors = alreadyUsedColorsinforemove;
 
-            Extensions.PlayerInfoCollection.Update(inforemove);
+            Extensions.PlayerInfoCollection.Update(info);
             Plugin.GiveCoroutine(player);
 
-            response = Plugin.config.Translation.Successfull;
+            response = Plugin.config.Translation.Successfull
+                .Replace("%current%", text);
             return true;
         }
     }

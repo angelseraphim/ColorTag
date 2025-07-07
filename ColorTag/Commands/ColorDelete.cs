@@ -21,7 +21,8 @@ namespace ColorTag.Commands
 
             if (!player.HasPermissions(Plugin.config.AdminRequirePermission))
             {
-                response = Plugin.config.Translation.DontHavePermissions.Replace("%permission%", Plugin.config.AdminRequirePermission);
+                response = Plugin.config.Translation.DontHavePermissions
+                    .Replace("%permission%", Plugin.config.AdminRequirePermission);
                 return false;
             }
 
@@ -36,7 +37,8 @@ namespace ColorTag.Commands
                 case "all":
                     if (!player.HasPermissions(Plugin.config.DropDataRequirePermission))
                     {
-                        response = Plugin.config.Translation.DontHavePermissions.Replace("%permission%", Plugin.config.DropDataRequirePermission);
+                        response = Plugin.config.Translation.DontHavePermissions
+                            .Replace("%permission%", Plugin.config.DropDataRequirePermission);
                         return false;
                     }
 
@@ -53,7 +55,8 @@ namespace ColorTag.Commands
 
                     Extensions.DeletePlayer(arguments.At(0));
 
-                    response = Plugin.config.Translation.SuccessfullDeleted.Replace("%userid%", arguments.At(0));
+                    response = Plugin.config.Translation.SuccessfullDeleted
+                        .Replace("%userid%", arguments.At(0));
                     return true;
             }
         }

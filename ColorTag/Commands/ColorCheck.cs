@@ -21,7 +21,8 @@ namespace ColorTag.Commands
 
             if (!player.HasPermissions(Plugin.config.AdminRequirePermission))
             {
-                response = Plugin.config.Translation.DontHavePermissions.Replace("%permission%", Plugin.config.AdminRequirePermission);
+                response = Plugin.config.Translation.DontHavePermissions
+                    .Replace("%permission%", Plugin.config.AdminRequirePermission);
                 return false;
             }
 
