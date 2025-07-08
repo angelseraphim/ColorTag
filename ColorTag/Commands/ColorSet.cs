@@ -70,11 +70,15 @@ namespace ColorTag.Commands
                 text += $"{s} ";
 
             if (!Extensions.TryGetValue(player.UserId, out PlayerInfo info))
+            {
                 Extensions.InsertPlayerAsync(player, colors);
+            }
+            else
+            {
+                info.Colors = colors;
+                Extensions.PlayerInfoCollection.Update(info);
+            }
 
-            info.Colors = colors;
-
-            Extensions.PlayerInfoCollection.Update(info);
             Plugin.GiveCoroutine(player);
 
             response = Plugin.config.Translation.Successfull
