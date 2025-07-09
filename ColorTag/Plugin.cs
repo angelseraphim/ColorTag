@@ -1,7 +1,6 @@
 ﻿using ColorTag.Configs;
 using ColorTag.EventHandlers;
 using LabApi.Features.Console;
-using LabApi.Features.Permissions;
 using LabApi.Features.Wrappers;
 using LabApi.Loader.Features.Plugins;
 using LiteDB;
@@ -17,7 +16,7 @@ namespace ColorTag
         public override string Name => "ColorTag";
         public override string Author => "angelseraphim.";
         public override string Description => "ColorTag";
-        public override Version Version => new Version(2, 0, 1);
+        public override Version Version => new Version(2, 1, 0);
         public override Version RequiredApiVersion => new Version(1, 0, 2);
 
         private string MainDirectory;
@@ -120,26 +119,6 @@ namespace ColorTag
             }
 
             return $"Aviable colors: {content}";
-        }
-
-        internal static void GiveCoroutine(Player player)
-        {
-            if (player == null || string.IsNullOrEmpty(player.UserId))
-                return;
-
-            if (!Extensions.TryGetValue(player.UserId, out Data.PlayerInfo info))
-                return;
-
-            if (string.IsNullOrEmpty(player.UserGroup.Name) || !player.HasPermissions(config.ColorRequirePermission))
-            {
-                Extensions.DeletePlayer(player.UserId);
-                return;
-            }
-
-            if (PlayerCoroutines.TryGetValue(player, out CoroutineHandle coroutine) && coroutine.IsRunning)
-                Timing.KillCoroutines(coroutine);
-
-            PlayerCoroutines[player] = Timing.RunCoroutine(Coroutines.ChangeColor(player, info.Colors));
         }
     }
 }

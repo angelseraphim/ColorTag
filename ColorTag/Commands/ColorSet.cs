@@ -79,7 +79,7 @@ namespace ColorTag.Commands
                 Extensions.PlayerInfoCollection.Update(info);
             }
 
-            Plugin.GiveCoroutine(player);
+            player.GiveCoroutine();
 
             response = Plugin.config.Translation.Successfull
                 .Replace("%current%", text);

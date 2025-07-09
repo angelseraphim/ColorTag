@@ -1,5 +1,6 @@
 ﻿using LabApi.Features.Wrappers;
 using LiteDB;
+using MEC;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using static ColorTag.Data;
@@ -36,5 +37,22 @@ namespace ColorTag
         }
 
         internal static void DeleteAll() => PlayerInfoCollection.DeleteAll();
+
+        internal static void GiveCoroutine(this Player player)
+        {
+            if (player == null || string.IsNullOrEmpty(player.UserId))
+                return;
+
+            if (player.UserGroup == null || player.GroupColor == null)
+                return;
+
+            if (!TryGetValue(player.UserId, out PlayerInfo info))
+                return;
+
+            if (Plugin.PlayerCoroutines.TryGetValue(player, out CoroutineHandle coroutine) && coroutine.IsRunning)
+                Timing.KillCoroutines(coroutine);
+
+            Plugin.PlayerCoroutines[player] = Timing.RunCoroutine(Coroutines.ChangeColor(player, info.Colors));
+        }
     }
 }

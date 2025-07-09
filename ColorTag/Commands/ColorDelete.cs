@@ -46,6 +46,7 @@ namespace ColorTag.Commands
 
                     response = Plugin.config.Translation.KillDataBase;
                     return true;
+
                 default:
                     if (!Extensions.TryGetValue(arguments.At(0), out PlayerInfo info))
                     {
